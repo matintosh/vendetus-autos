@@ -1,0 +1,12 @@
+{
+  "name": "vendetus-autos-public",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.16.1",
+  "scripts": {
+    "build": "pnpm -r --filter './packages/*' build",
+    "typecheck": "pnpm -r typecheck",
+    "publish:mcp": "pnpm --filter vendetus-mcp publish --access public",
+    "publish:sdk": "pnpm --filter @vendetus/sdk publish --access public"
+  }
+}

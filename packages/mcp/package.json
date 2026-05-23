@@ -1,0 +1,50 @@
+{
+  "name": "vendetus-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for vendetus.autos — read/write car listings, offers, comments, analytics from any MCP-compatible AI agent.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "vendetus-mcp": "dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md", "SKILL.md"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@vendetus/sdk": "workspace:*",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "typescript": "^5.7.2"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "vendetus",
+    "vendetus.autos",
+    "car",
+    "marketplace",
+    "uruguay"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matintosh/vendetus-autos.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://vendetus.autos/docs/mcp"
+}

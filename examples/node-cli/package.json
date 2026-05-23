@@ -1,0 +1,10 @@
+{
+  "name": "node-cli-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bin": "src/index.js",
+  "dependencies": {
+    "@vendetus/sdk": "workspace:*"
+  }
+}
