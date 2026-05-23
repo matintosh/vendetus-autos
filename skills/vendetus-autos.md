@@ -152,7 +152,7 @@ Get a key from `https://app.vendetus.autos/integrations` (requires Pro or Dealer
 
 Install:
 ```bash
-claude mcp add vendetus-autos --env VENDETUS_API_KEY=pcsk_... -- npx -y vendetus-mcp
+claude mcp add vendetus-autos --env VENDETUS_API_KEY=pcsk_... -- npx -y @vendetus/mcp
 ```
 
 Exposes 6 tools wrapping the authenticated API: `list_my_cars`, `get_car`, `update_car`, `list_offers`, `list_comments`, `get_analytics`.
