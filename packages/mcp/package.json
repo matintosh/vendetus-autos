@@ -1,5 +1,5 @@
 {
-  "name": "vendetus-mcp",
+  "name": "@vendetus/mcp",
   "version": "0.1.0",
   "description": "MCP server for vendetus.autos — read/write car listings, offers, comments, analytics from any MCP-compatible AI agent.",
   "license": "MIT",
