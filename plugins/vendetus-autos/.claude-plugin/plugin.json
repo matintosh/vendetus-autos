@@ -1,7 +1,7 @@
 {
   "name": "vendetus-autos",
   "description": "Integrate any website with vendetus.autos — embed listings, post questions/offers from your forms, fetch car data, manage inventory. Bundles an MCP server, a skill, and slash commands for the integrator workflow.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "vendetus.autos",
     "url": "https://vendetus.autos"
