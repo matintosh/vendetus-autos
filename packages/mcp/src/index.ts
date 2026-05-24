@@ -19,12 +19,27 @@ const client = new VendetusClient({
 
 const server = new McpServer({
   name: "vendetus-autos",
-  version: "0.1.0",
+  version: "0.1.1",
 });
+
+const URL_USAGE_NOTE =
+  "integration_urls.api is the canonical endpoint to fetch this car's data — use it for ALL programmatic access. integration_urls.public_page is a browser-facing HTML landing page; never fetch JSON from it or append paths to it. integration_urls.embed is the iframe src for embed widgets only.";
+
+function buildUrls(slug: string) {
+  return {
+    api: `https://api.vendetus.autos/v1/public/cars/${slug}`,
+    embed: `https://vendetus.autos/embed/car/${slug}`,
+    public_page: `https://${slug}.vendetus.autos`,
+  };
+}
+
+function withUrls<T extends { slug: string }>(car: T) {
+  return { ...car, integration_urls: buildUrls(car.slug) };
+}
 
 server.tool(
   "list_my_cars",
-  "List all cars owned by the authenticated seller.",
+  "List all cars owned by the authenticated seller. Each returned car includes an integration_urls block — use integration_urls.api as the data endpoint, never the public_page subdomain.",
   {
     status: z
       .enum(["draft", "active", "sold", "archived"])
@@ -34,17 +49,29 @@ server.tool(
   },
   async ({ status, limit }) => {
     const { cars } = await client.listMyCars({ status, limit });
-    return { content: [{ type: "text", text: JSON.stringify(cars, null, 2) }] };
+    const payload = {
+      cars: cars.map(withUrls),
+      _note: URL_USAGE_NOTE,
+    };
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
+    };
   },
 );
 
 server.tool(
   "get_car",
-  "Get full details for a single car (by id).",
+  "Get full details for a single car (by id). Response includes an integration_urls block — use integration_urls.api as the canonical data endpoint for any subsequent fetch, never the public_page subdomain.",
   { id: z.string().uuid() },
   async ({ id }) => {
     const { car } = await client.getCar(id);
-    return { content: [{ type: "text", text: JSON.stringify(car, null, 2) }] };
+    const payload = {
+      car: withUrls(car),
+      _note: URL_USAGE_NOTE,
+    };
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
+    };
   },
 );
 

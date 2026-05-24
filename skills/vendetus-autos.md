@@ -5,13 +5,28 @@ description: Integrate with vendetus.autos — embed listings, post questions/of
 
 # vendetus.autos integration
 
-vendetus.autos is a car selling platform in Uruguay. Each car gets a free site at `<slug>.vendetus.autos`. Sellers can integrate their own websites via:
+vendetus.autos is a car selling platform in Uruguay. Sellers integrate their own websites via:
 
 - **Embed widget** (no key): drop a `<div>` + `<script>` snippet, get a styled card
 - **iframe** (no key): even simpler, no JS
 - **Public REST API** (`/v1/public/*`): requires API key — for embedding read+write into your own site (proxy from your backend)
 - **Authenticated REST API** (`/v1/cars/...`): for sellers managing their own data
 - **MCP server**: AI agents calling the authenticated API via tools
+
+## CRITICAL: there are two kinds of URLs — do not confuse them
+
+| URL shape | Purpose | Use it for |
+|---|---|---|
+| `https://api.vendetus.autos/v1/...` | REST API host | **All data fetching, all programmatic access** (HTML or JSON, GET or POST) |
+| `https://<slug>.vendetus.autos` | Public marketing landing page (rendered HTML) | **User-facing browser link only** — "View on vendetus" buttons, mailto/share targets |
+| `https://vendetus.autos/embed/car/<slug>` | iframe-only embed view | `<iframe src="...">` only |
+
+**DO NOT fetch data from `<slug>.vendetus.autos`.** That subdomain is a Next.js page — HTML, not JSON. Scraping it works once and breaks on the next styling change. The agent's mistake is usually: see `car.public_url` in a JSON response, assume it's an API base, prepend `/comments` to it → 404 or HTML soup.
+
+**Rule of thumb when building an integrator website:**
+- Need car data? → `GET https://api.vendetus.autos/v1/public/cars/<slugOrId>` with `Authorization: Bearer ...`
+- Need to display a car page link to a user? → use `car.public_url` (or build it as `https://<slug>.vendetus.autos`)
+- Need to embed visually with zero code? → use the loader script or iframe
 
 ## When to use this skill
 
@@ -68,6 +83,17 @@ Returns:
     "dealership": null,
     "photos": [{ "id": "...", "url": "https://...png", "position": 0 }]
   }
+}
+```
+
+> `public_url` is a **browser landing page**, not an API endpoint. Don't fetch JSON from it, don't append paths to it. To fetch this car's data again, use `https://api.vendetus.autos/v1/public/cars/<slugOrId>`.
+
+```text
+NOTE — when MCP tools return a car, they include an extra `integration_urls` block:
+{
+  "api":         "https://api.vendetus.autos/v1/public/cars/<slug>",  // ← fetch here
+  "embed":       "https://vendetus.autos/embed/car/<slug>",           // ← iframe src
+  "public_page": "https://<slug>.vendetus.autos"                      // ← browser link
 }
 ```
 
