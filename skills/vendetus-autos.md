@@ -107,7 +107,7 @@ Returns the public Q&A thread for the car plus the seller block:
   "comments": [
     {
       "id": "uuid",
-      "author_name": "Martín R.",
+      "author_name": "Visitante",
       "body": "¿Service al día?",
       "created_at": "2026-05-12T...",
       "answer": {
@@ -118,6 +118,8 @@ Returns the public Q&A thread for the car plus the seller block:
   ]
 }
 ```
+
+> `author_name` is always `"Visitante"` on the public surface — the asker's real name is only visible to the car owner in their authenticated inbox.
 
 `answer` is `null` until the seller responds. `answer.body` supports inline markdown: `**bold**` (kept as foreground text) and `*italic*` (renders as the brand-whisper accent — italic mono in amber). Render answers indented or in a tinted bubble under the question.
 
