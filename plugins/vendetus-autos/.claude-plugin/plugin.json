@@ -1,0 +1,31 @@
+{
+  "name": "vendetus-autos",
+  "description": "Integrate any website with vendetus.autos — embed listings, post questions/offers from your forms, fetch car data, manage inventory. Bundles an MCP server, a skill, and slash commands for the integrator workflow.",
+  "version": "1.0.0",
+  "author": {
+    "name": "vendetus.autos",
+    "url": "https://vendetus.autos"
+  },
+  "homepage": "https://vendetus.autos/docs",
+  "repository": "https://github.com/matintosh/vendetus-autos",
+  "license": "MIT",
+  "keywords": ["vendetus", "cars", "uruguay", "embed", "mcp", "rest-api"],
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Vendetus API key",
+      "description": "Get one at https://app.vendetus.autos/integrations (requires Pro or Dealer plan). Starts with pcsk_…",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "mcpServers": {
+    "vendetus-autos": {
+      "command": "npx",
+      "args": ["-y", "@vendetus/mcp"],
+      "env": {
+        "VENDETUS_API_KEY": "${user_config.api_key}"
+      }
+    }
+  }
+}

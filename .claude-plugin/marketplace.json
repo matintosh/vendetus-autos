@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "vendetus",
+  "owner": {
+    "name": "vendetus.autos",
+    "url": "https://vendetus.autos"
+  },
+  "metadata": {
+    "description": "Plugins for integrating with vendetus.autos — the car selling platform for Uruguay.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "vendetus-autos",
+      "source": "./plugins/vendetus-autos",
+      "description": "Ship a car-selling integration with vendetus.autos: embed widgets, REST API, MCP tools, and an integrator skill — bundled into one install.",
+      "category": "integration",
+      "tags": ["cars", "marketplace", "uruguay", "mcp", "embed", "rest-api"],
+      "homepage": "https://vendetus.autos/docs",
+      "repository": "https://github.com/matintosh/vendetus-autos"
+    }
+  ]
+}
