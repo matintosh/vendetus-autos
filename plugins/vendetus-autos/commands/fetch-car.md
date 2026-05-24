@@ -7,6 +7,15 @@ The user wants to display a car from vendetus.autos with custom design (not the 
 
 **Argument**: `$ARGUMENTS` — car slug or id. If missing, prompt for it (e.g. `volkswagen-vento-wokpy4`).
 
+## CRITICAL — URL routing rules
+
+Vendetus has two distinct hosts. Do not confuse them:
+
+- **`https://api.vendetus.autos/v1/...`** — REST API, returns JSON. Use this for ALL data fetching.
+- **`https://<slug>.vendetus.autos`** — public landing page, returns HTML. **NEVER fetch from here**, never POST to it, never append `/comments` or `/offers` to it. The server returns 421 with a hint if you try.
+
+When the MCP tool returns a car, it includes an `integration_urls` block — always read `integration_urls.api` as the canonical data endpoint. The `public_page` field is only for "view on vendetus" browser links shown to the end user.
+
 ## What to do
 
 1. Call the MCP tool `mcp__vendetus-autos__get_car` with the slug/id to fetch the full payload (id, title, make, model, year, km, price, currency, description, photos[], public_url, dealership, etc).
