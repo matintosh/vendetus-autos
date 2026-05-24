@@ -19,7 +19,7 @@ const client = new VendetusClient({
 
 const server = new McpServer({
   name: "vendetus-autos",
-  version: "0.1.1",
+  version: "0.2.0",
 });
 
 const URL_USAGE_NOTE =
@@ -110,12 +110,32 @@ server.tool(
 
 server.tool(
   "list_comments",
-  "List questions/comments left on a given car.",
+  "List questions left on a given car. Each comment has optional answer_body + answer_at fields — when present, that answer is already published publicly under the question. Use respond_to_comment to publish a new answer or replace an existing one.",
   { carId: z.string().uuid() },
   async ({ carId }) => {
     const { comments } = await client.listComments(carId);
     return {
       content: [{ type: "text", text: JSON.stringify(comments, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  "respond_to_comment",
+  "Publicly answer a question on the seller's car. The answer renders inline under the question on the public car page (<slug>.vendetus.autos). Pass body: null to clear an existing answer. Supports inline markdown: **bold** and *italic* (italic renders as the brand-whisper accent style).",
+  {
+    commentId: z.string().uuid(),
+    body: z
+      .string()
+      .min(1)
+      .max(4000)
+      .nullable()
+      .describe("Answer text, or null to remove an existing answer."),
+  },
+  async ({ commentId, body }) => {
+    const { comment } = await client.answerComment(commentId, body);
+    return {
+      content: [{ type: "text", text: JSON.stringify(comment, null, 2) }],
     };
   },
 );

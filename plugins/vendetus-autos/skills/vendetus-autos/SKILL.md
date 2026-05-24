@@ -99,7 +99,27 @@ NOTE — when MCP tools return a car, they include an extra `integration_urls` b
 
 ### `GET /v1/public/cars/:id/comments`
 
-Returns public questions on the car: `[{ id, body, created_at }]`. Author names are not exposed publicly.
+Returns the public Q&A thread for the car plus the seller block:
+
+```json
+{
+  "seller": { "display_name": "Matías F.", "username": "matias" },
+  "comments": [
+    {
+      "id": "uuid",
+      "author_name": "Martín R.",
+      "body": "¿Service al día?",
+      "created_at": "2026-05-12T...",
+      "answer": {
+        "body": "Sí, **al día** en VW Pereira. La correa se cambió en *92.000 km*.",
+        "at": "2026-05-12T..."
+      }
+    }
+  ]
+}
+```
+
+`answer` is `null` until the seller responds. `answer.body` supports inline markdown: `**bold**` (kept as foreground text) and `*italic*` (renders as the brand-whisper accent — italic mono in amber). Render answers indented or in a tinted bubble under the question.
 
 ### `POST /v1/public/cars/:id/comments`
 
@@ -171,7 +191,8 @@ Get a key from `https://app.vendetus.autos/integrations` (requires Pro or Dealer
 - `GET /v1/cars/:id` (with photos)
 - `PATCH /v1/cars/:id` (write scope; updates: title, price, currency, status, description, km, color)
 - `GET /v1/cars/:id/offers`
-- `GET /v1/cars/:id/comments` (includes private + public, with author names)
+- `GET /v1/cars/:id/comments` (includes private + public, with author names, plus `answer_body` and `answer_at` for already-answered questions)
+- `PATCH /v1/comments/:id` (write scope; body `{ "answer_body": "Sí, lo tiene." }` publishes a public answer under the question. Pass `null` to clear an existing answer.)
 - `GET /v1/cars/:id/analytics?days=30` (totals, unique sessions, daily views, top referrers)
 
 ## MCP
@@ -181,7 +202,9 @@ Install:
 claude mcp add vendetus-autos --env VENDETUS_API_KEY=pcsk_... -- npx -y @vendetus/mcp
 ```
 
-Exposes 6 tools wrapping the authenticated API: `list_my_cars`, `get_car`, `update_car`, `list_offers`, `list_comments`, `get_analytics`.
+Exposes 7 tools wrapping the authenticated API: `list_my_cars`, `get_car`, `update_car`, `list_offers`, `list_comments`, `respond_to_comment`, `get_analytics`.
+
+**Answering questions from an agent:** `list_comments(carId)` surfaces each question's `answer_body` + `answer_at` (null when unanswered). To publish a reply, call `respond_to_comment({ commentId, body })`. To remove an existing answer, pass `body: null`. Use `*italic*` for the brand-whisper accent style on key phrases ("hago el *service en VW Pereira*", "anda a *120 km/h sin pasarla mal*") and `**bold**` for emphasis ("**Sí**, la cuarta llave la tengo").
 
 ## Plans / quotas
 

@@ -71,6 +71,13 @@ export type Comment = {
   body: string;
   seen_at: string | null;
   created_at: string;
+  /**
+   * Public answer published by the car owner. When non-null, this appears
+   * inline under the question on the public car page (`<slug>.vendetus.autos`)
+   * and via `GET /v1/public/cars/:id/comments`.
+   */
+  answer_body: string | null;
+  answer_at: string | null;
 };
 
 export type AnalyticsResponse = {
@@ -157,6 +164,21 @@ export class VendetusClient {
     return this.request<{ comments: Comment[] }>(
       `/v1/cars/${carId}/comments`,
     );
+  }
+
+  /**
+   * Publicly answer a question (or clear an existing answer with `null`).
+   * The answer appears inline under the question on the public car page.
+   * Requires `write` scope.
+   */
+  async answerComment(
+    commentId: string,
+    body: string | null,
+  ): Promise<{ comment: Comment }> {
+    return this.request<{ comment: Comment }>(`/v1/comments/${commentId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ answer_body: body }),
+    });
   }
 
   async getAnalytics(
